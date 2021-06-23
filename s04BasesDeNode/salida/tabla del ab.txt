@@ -1,0 +1,10 @@
+ab X 1 = NaN
+ab X 2 = NaN
+ab X 3 = NaN
+ab X 4 = NaN
+ab X 5 = NaN
+ab X 6 = NaN
+ab X 7 = NaN
+ab X 8 = NaN
+ab X 9 = NaN
+ab X 10 = NaN

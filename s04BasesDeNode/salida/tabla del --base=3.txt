@@ -1,0 +1,10 @@
+--base=3 X 1 = NaN
+--base=3 X 2 = NaN
+--base=3 X 3 = NaN
+--base=3 X 4 = NaN
+--base=3 X 5 = NaN
+--base=3 X 6 = NaN
+--base=3 X 7 = NaN
+--base=3 X 8 = NaN
+--base=3 X 9 = NaN
+--base=3 X 10 = NaN
