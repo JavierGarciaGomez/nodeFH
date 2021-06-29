@@ -14,7 +14,6 @@ const Busquedas = require("./models/Busquedas");
 
 // 67, 68
 const main = async () => {
-  console.log(process.env);
   // 69
   const busquedas = new Busquedas();
 
@@ -32,7 +31,12 @@ const main = async () => {
         const lugares = await busquedas.ciudad(lugar);
         // seleccionar el lugar
         const id = await listarLugares(lugares);
+        if (id === "0") {
+          continue;
+        }
         const lugarSel = lugares.find((lugar) => lugar.id === id);
+        // llamar al historial
+        busquedas.agregarHistorial(lugarSel.nombre);
 
         // clima
 
@@ -52,7 +56,9 @@ const main = async () => {
         break;
 
       case 2:
-        console.log("opción 2 escogida");
+        busquedas.historial.forEach((lugar, index) => {
+          console.log(index + 1, lugar);
+        });
         break;
     }
 
