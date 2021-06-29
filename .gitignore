@@ -1,2 +1,3 @@
-/s04BasesDeNode/salida/.txt
+/s04BasesDeNode/salida/*.txt
 node_modules/
+tokens.txt
