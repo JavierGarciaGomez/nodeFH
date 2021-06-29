@@ -4,15 +4,17 @@ const {
   inquirerMenu,
   pausar,
   leerInput,
-  listadoTareasBorrar,
+  listarLugares: listadoTareasBorrar,
   confirmar,
   mostrarListadoChecklist,
+  listarLugares,
 } = require("./helpers/inquirer");
 // 69
 const Busquedas = require("./models/Busquedas");
 
 // 67, 68
 const main = async () => {
+  console.log(process.env);
   // 69
   const busquedas = new Busquedas();
 
@@ -26,12 +28,27 @@ const main = async () => {
       case 1:
         // mostrar mensaje
         const lugar = await leerInput("Escribe la ciudad");
-        busquedas.ciudad(lugar);
-        console.log(lugar);
         // buscar los lugares
+        const lugares = await busquedas.ciudad(lugar);
         // seleccionar el lugar
+        const id = await listarLugares(lugares);
+        const lugarSel = lugares.find((lugar) => lugar.id === id);
+
         // clima
-        // mostrar resultados
+
+        const clima = await busquedas.climaLugar(lugarSel.lat, lugarSel.lng);
+        // Mostrar resultados
+
+        console.clear();
+        console.log("\nInformación de la ciudad\n".green);
+        console.log("Ciudad:", lugarSel.nombre.green);
+        console.log("Lat:", lugarSel.lat);
+        console.log("Lng:", lugarSel.lng);
+        console.log("Temperatura:", clima.temp);
+        console.log("Mínima:", clima.min);
+        console.log("Máxima:", clima.max);
+        console.log("Como está el clima:", clima.desc);
+
         break;
 
       case 2:
