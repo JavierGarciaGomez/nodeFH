@@ -2,6 +2,9 @@
 
 const { response, request } = require("express");
 const Usuario = require("../models/usuario");
+// 121
+const bcrypt = require("bcryptjs");
+const { validationResult } = require("express-validator");
 
 const usersGet = (req = request, res = response) => {
   const { q, nombre = "No name", apikey, page = 1, limit } = req.query;
@@ -16,10 +19,21 @@ const usersGet = (req = request, res = response) => {
   });
 };
 
+// ..., 120, 121, 122
 const usuariosPost = async (req, res = response) => {
   const { nombre, correo, password, rol } = req.body;
 
   const usuario = new Usuario({ nombre, correo, password, rol });
+  // 122 Verificar si el correo existe
+  const existeCorreo = await Usuario.findOne({ correo });
+  if (existeCorreo) {
+    return res.status(400).json({ msg: "El correo ya está registrado" });
+  }
+  const salt = bcrypt.genSaltSync();
+  usuario.password = bcrypt.hashSync(password, salt);
+  // Encriptar la contraseña
+  // Guardar en db
+
   await usuario.save();
   res.json({
     usuario,

@@ -32,4 +32,10 @@ const UsuarioSchema = Schema({
   },
 });
 
+// 125 rewrite method to not use __v and password
+UsuarioSchema.methods.toJSON = function () {
+  const { __v, password, ...usuario } = this.toObject();
+  return usuario;
+};
+
 module.exports = model("Usuario", UsuarioSchema);
