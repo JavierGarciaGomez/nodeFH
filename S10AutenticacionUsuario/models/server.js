@@ -1,36 +1,37 @@
+// 101, 102, 106, 118
 const express = require("express");
+// 105
 const cors = require("cors");
-
 const { dbConnection } = require("../database/config");
-
 class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
+    // Rutas de mi app
     this.usuariosPath = "/api/usuarios";
 
-    // Conectar a base de datos
+    // Conexión a la base de datos
+
     this.conectarDB();
 
-    // Middlewares
+    // Middleware
     this.middlewares();
 
-    // Rutas de mi aplicación
     this.routes();
+    // 106
   }
 
+  // 118
   async conectarDB() {
+    console.log("Conectando a la DB");
+    console.log(process.env.MONGODB_CNN);
     await dbConnection();
   }
-
   middlewares() {
-    // CORS
+    // 105
     this.app.use(cors());
-
-    // Lectura y parseo del body
+    // 107 parseo y lectura del body
     this.app.use(express.json());
-
-    // Directorio Público
     this.app.use(express.static("public"));
   }
 
@@ -39,8 +40,9 @@ class Server {
   }
 
   listen() {
+    // 100
     this.app.listen(this.port, () => {
-      console.log("Servidor corriendo en puerto", this.port);
+      console.log("listening");
     });
   }
 }

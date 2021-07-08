@@ -16,6 +16,7 @@ const emailExiste = async (correo = "") => {
   }
 };
 
+// 128
 const existeUsuarioPorId = async (id) => {
   // Verificar si el correo existe
   const existeUsuario = await Usuario.findById(id);

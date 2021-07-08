@@ -17,11 +17,11 @@ const UsuarioSchema = Schema({
   img: {
     type: String,
   },
-  // rol: {
-  //   type: String,
-  //   required: false,
-  //   emun: ["ADMIN_ROLE", "USER_ROLE"],
-  // },
+  rol: {
+    type: String,
+    required: true,
+    enum: ["ADMIN_ROLE", "USER_ROLE"],
+  },
   estado: {
     type: Boolean,
     default: true,
@@ -32,6 +32,7 @@ const UsuarioSchema = Schema({
   },
 });
 
+// 125 rewrite method to not use __v and password
 UsuarioSchema.methods.toJSON = function () {
   const { __v, password, ...usuario } = this.toObject();
   return usuario;
