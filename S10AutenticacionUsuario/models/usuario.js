@@ -32,9 +32,10 @@ const UsuarioSchema = Schema({
   },
 });
 
-// 125 rewrite method to not use __v and password
+// 125 rewrite method to not use __v and password, 143
 UsuarioSchema.methods.toJSON = function () {
-  const { __v, password, ...usuario } = this.toObject();
+  const { __v, password, _id, ...usuario } = this.toObject();
+  usuario.uid = _id;
   return usuario;
 };
 
