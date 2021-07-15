@@ -1,100 +1,111 @@
-// 165
+// 167, 168, 169
 
 const { response } = require("express");
 const bcryptjs = require("bcryptjs");
-const Usuario = require("../models/usuario");
 
 const { generarJWT } = require("../helpers/generar-jwt");
 const { googleVerify } = require("../helpers/google-verify");
+const { Categoria } = require("../models");
 
-// 140, 141
-const login = async (req = request, res = response) => {
-  const { correo, password } = req.body;
+// 169 obtenerCategorias - paginado - total - populate
+const obtenerCategorias = async (req = request, res = response) => {
+  const { limite = 5, desde = 0 } = req.query;
+  const query = { estado: true };
 
-  try {
-    // verificar si el email existe
-    const usuario = await Usuario.findOne({ correo });
-    if (!usuario) {
-      return res.status(400).json({
-        msg: "Usuario o contraseña son incorrectas - mail",
-      });
-    }
-    // si el usuario está activo
-    if (!usuario.estado) {
-      return res.status(400).json({
-        msg: "Usuario o contraseña son incorrectas - estado: false",
-      });
-    }
+  const [total, categorias] = await Promise.all([
+    Categoria.countDocuments(query),
+    Categoria.find(query)
+      // pupulate
+      .populate("usuario", "nombre")
+      .skip(Number(desde))
+      .limit(Number(limite)),
+  ]);
 
-    // verificar la contraseña
-    const validPassword = bcryptjs.compareSync(password, usuario.password);
-    if (!validPassword) {
-      return res.status(400).json({
-        msg: "Usuario o contraseña son incorrectas - estado: contraseña",
-      });
-    }
+  res.json({
+    total,
+    categorias,
+  });
+};
+// 169 obtenerCategoria - populate {}
+const obtenerCategoria = async (req, res = response) => {
+  const { id } = req.params;
+  const categoria = await (
+    await Categoria.findById(id)
+  ).populate("usuario", "nombre");
 
-    console.log(validPassword);
+  console.log(id);
 
-    // generar el JWT
-    const token = await generarJWT(usuario.id);
-
-    return res.json({
-      usuario,
-      token,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      msg: "Hable con el administrador",
-    });
-  }
+  res.json(categoria);
 };
 
-const googleSignin = async (req = request, res = response) => {
-  const { id_token } = req.body;
-  console.log("Imprimo id token", id_token);
+// actualizarCategoria
+// borrarCategoria
 
-  try {
-    const googleUser = await googleVerify(id_token);
-    console.log("Google User", googleUser);
-    const { correo, nombre, img } = googleUser;
-    let usuario = await Usuario.findOne({ correo });
-
-    // si el usuario no existe, lo guarda en la base de datos
-    if (!usuario) {
-      const data = {
-        nombre,
-        correo,
-        password: "",
-        img,
-        google: true,
-      };
-      // crea el usuario y lo graba
-      usuario = new Usuario(data);
-      await usuario.save();
-    }
-
-    // Si el usuario en DB tiene estado falso
-    if (!usuario.estado) {
-      return res.status(401).json({ msg: "El usuario está bloqueado" });
-    }
-
-    // Generar el json web token
-    const token = await generarJWT(usuario.id);
-
-    // console.log("googleUser", googleUser);
-    res.json({
-      usuario,
-      token,
-    });
-  } catch (error) {
-    res.status(400).json({
-      msg: "Token no es válido",
+// 167
+const crearCategoria = async (req, res = response) => {
+  const nombre = req.body.nombre.toUpperCase();
+  const categoriaDB = await Categoria.findOne({ nombre });
+  // revisar si ya existe
+  if (categoriaDB) {
+    return res.status(400).json({
+      msg: `La categoria ${categoriaDB.nombre} ya existe`,
     });
   }
+  // Generar el objeto para guardar
+  const data = {
+    nombre,
+    usuario: req.usuario._id,
+  };
+
+  console.log("categoriasControllers: imprimoData", data);
+
+  // guardar
+  const categoria = new Categoria(data);
+  console.log("categoria", categoria);
+  await categoria.save();
+
+  res.status(201).json({
+    categoria,
+  });
 };
+
+// 170
+const actualizarCategoria = async (req, res = response) => {
+  // obtengo el id
+  const { id } = req.params;
+
+  // extraigo lo que no me sirve
+  const { estado, usuario, ...data } = req.body;
+
+  // le pongo el nombre el mayúscula
+  data.nombre = data.nombre.toUpperCase();
+
+  // le pongo los datos del nuevo usuario
+  data.usuario = req.usuario._id;
+  console.log("imprimo la data", data);
+
+  // actualizo la categoría
+  const categoria = await Categoria.findByIdAndUpdate(id, data, { new: true });
+
+  res.json(categoria);
+};
+
+// 170
+const borrarCategoria = async (req, res = response) => {
+  const { id } = req.params;
+  const categoriaBorrada = await Categoria.findByIdAndUpdate(
+    id,
+    { estado: false },
+    { new: true }
+  );
+
+  res.json(categoriaBorrada);
+};
+
 module.exports = {
-  login,
-  googleSignin,
+  crearCategoria,
+  obtenerCategorias,
+  obtenerCategoria,
+  actualizarCategoria,
+  borrarCategoria,
 };
