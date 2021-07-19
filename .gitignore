@@ -2,3 +2,5 @@
 node_modules/
 tokens.txt
 .env
+uploads/productos/**.*
+uploads/usuarios/**.*
