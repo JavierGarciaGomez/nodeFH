@@ -40,9 +40,7 @@ export class Tasks {
 
   private printTasks = (tasks: Task[]) => {
     tasks.forEach(({ description, completed }, index) => {
-      const status = completed
-        ? chalk.green("Completed")
-        : chalk.red("Pending");
+      const status = completed ? chalk.green("Complete") : chalk.red("Pending");
 
       console.log(`${chalk.magenta(index + 1)}. ${description} :: ${status}`);
     });
