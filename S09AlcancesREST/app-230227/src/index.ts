@@ -1,4 +1,4 @@
-import { Server } from "./models/server";
+import { Server } from "./models/Server";
 import { config } from "dotenv";
 import path from "path";
 

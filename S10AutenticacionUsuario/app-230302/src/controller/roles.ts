@@ -1,6 +1,4 @@
-import { Request, Response, Router } from "express";
-import bcrypt from "bcrypt";
-import UserModel from "../models/User";
+import { Request, Response } from "express";
 import RoleModel from "../models/Role";
 
 export const listRoles = async (req: Request, res: Response) => {

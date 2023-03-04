@@ -1,4 +1,3 @@
-import { validateFields } from "./../middlewares/validateFields";
 import {
   createUser,
   deleteUser,
@@ -6,13 +5,15 @@ import {
   getUsers,
   updateUser,
 } from "./../controller/users";
-import { Request, Response, Router } from "express";
-import { check, validationResult } from "express-validator";
+import { Router } from "express";
+import { check } from "express-validator";
 import {
   checkEmailUniqueness,
   checkifUserExists,
   checkUserRole,
 } from "../helpers/dbValidations";
+import { validateJwt } from "../middlewares/validateJwt";
+import { itHasRole, isAdminRole, validateFields } from "../middlewares/";
 
 export const usersRouter = Router();
 
@@ -50,6 +51,9 @@ usersRouter.put(
 usersRouter.delete(
   "/:id",
   [
+    validateJwt,
+    isAdminRole,
+    itHasRole("ADMIN_ROLE", "SALES_ROLE"),
     check("id", "Is not a valid id").isMongoId(),
     checkifUserExists,
     validateFields,

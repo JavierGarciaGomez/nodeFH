@@ -1,8 +1,6 @@
-import { validateFields } from "../middlewares/validateFields";
-import {} from "../controller/users";
-import { Request, Response, Router } from "express";
-import { check, validationResult } from "express-validator";
-
+import { validateFields } from "../middlewares/";
+import { Router } from "express";
+import { check } from "express-validator";
 import { createRole, listRoles } from "../controller/roles";
 import { checkRoleUniqueness } from "../helpers/dbValidations";
 

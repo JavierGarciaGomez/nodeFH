@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import UserModel from "../models/User";
 import { validationResult } from "express-validator";
 import { createHashedPassword } from "../helpers/helpers";
+import { RequestWithUid } from "../interfaces/interfaces";
 
 export const getUsers = async (req: Request, res: Response) => {
   const { limit, skip } = req.query;
@@ -58,7 +59,9 @@ export const updateUser = async (req: Request, res: Response) => {
       user!.password = await createHashedPassword(password);
     }
 
-    const updatedUser = await UserModel.findByIdAndUpdate(id, userData);
+    const updatedUser = await UserModel.findByIdAndUpdate(id, userData, {
+      new: true,
+    });
 
     res.status(200).json({
       msg: "User updated successfully",
@@ -68,14 +71,18 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(500).json({ error, msg: "Error updating user" });
   }
 };
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req: RequestWithUid, res: Response) => {
   const { id } = req.params;
+  const authenticatedUser = req.user;
+  console.log({ authenticatedUser });
 
   // Find the user by id
   const user = await UserModel.findById(id);
   user!.active = false;
 
-  const updatedUser = await UserModel.findByIdAndUpdate(id, user!);
+  const updatedUser = await UserModel.findByIdAndUpdate(id, user!, {
+    new: true,
+  });
   return res.status(200).json({
     msg: "User deleted successfully",
     user: updatedUser,
