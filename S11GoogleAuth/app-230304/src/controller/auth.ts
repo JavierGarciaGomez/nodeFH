@@ -2,6 +2,8 @@ import { generateJwt } from "./../helpers/jwt";
 import { Request, Response } from "express";
 import { validatePassword } from "../helpers/helpers";
 import UserModel from "../models/User";
+import { OAuth2Client } from "google-auth-library";
+import { googleVerify } from "../helpers/googleVerify";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -28,6 +30,42 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(200).json({
       message: "User authenticated successfully.",
       user,
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({ error, msg: "Error" });
+  }
+};
+
+export const googleSignIn = async (req: Request, res: Response) => {
+  try {
+    const { id_token } = req.body;
+
+    const { email, name, picture } = await googleVerify(id_token);
+    let user = await UserModel.findOne({ email });
+
+    if (!user) {
+      user = new UserModel({
+        email,
+        name,
+        imgUrl: picture,
+        googleCreated: true,
+        password: ":D",
+      });
+
+      await user.save();
+    }
+
+    if (!user.active) {
+      res.status(401).json({ msg: "The user is not active" });
+    }
+
+    const token = await generateJwt(user.id);
+
+    res.status(201).json({
+      msg: "get API user",
+      user,
+
       token,
     });
   } catch (error) {
