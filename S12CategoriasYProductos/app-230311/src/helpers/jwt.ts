@@ -7,7 +7,7 @@ export const generateJwt = (uid: string) => {
       uid,
     };
 
-    const token = jwt.sign(
+    jwt.sign(
       jwtPayload,
       process.env.JWT_SECRET_KEY!,
       {

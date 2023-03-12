@@ -6,36 +6,31 @@ import path from "path";
 import { usersRouter } from "../routes/users";
 import { rolesRouter } from "../routes/roles";
 
-export class Server {
+class Server {
   private app: Express;
   private PORT: string;
-  private usersPath: string;
-  private rolesPath: string;
-  private authPath: string;
+  private apiPaths = {
+    usersPath: "/api/users",
+    authPath: "/api/auth",
+    rolesPath: "/api/roles",
+  };
 
   constructor() {
     this.app = express();
     this.PORT = process.env.PORT || "3033";
-    this.usersPath = "/api/users";
-    this.authPath = "/api/auth";
-    this.rolesPath = "/api/roles";
-
-    // connect to database
     this.connectDB();
-
-    // MIDDLEWARES
     this.middlewares();
     this.routes();
   }
 
-  connectDB = async () => {
+  async connectDB() {
     await connectDataBase();
-  };
+  }
 
   routes() {
-    this.app.use(this.usersPath, usersRouter);
-    this.app.use(this.rolesPath, rolesRouter);
-    this.app.use(this.authPath, authRouter);
+    this.app.use(this.apiPaths.usersPath, usersRouter);
+    this.app.use(this.apiPaths.rolesPath, rolesRouter);
+    this.app.use(this.apiPaths.authPath, authRouter);
   }
 
   middlewares() {
@@ -52,3 +47,5 @@ export class Server {
     );
   }
 }
+
+export default Server;

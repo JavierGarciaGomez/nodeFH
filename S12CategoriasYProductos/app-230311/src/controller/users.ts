@@ -1,7 +1,5 @@
-import { Request, Response, Router } from "express";
-import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 import UserModel from "../models/User";
-import { validationResult } from "express-validator";
 import { createHashedPassword } from "../helpers/helpers";
 import { RequestWithUid } from "../interfaces/interfaces";
 

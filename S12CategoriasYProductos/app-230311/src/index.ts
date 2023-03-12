@@ -1,8 +1,7 @@
-import { Server } from "./models/Server";
-import { config } from "dotenv";
-import path from "path";
+import Server from "./models/Server";
+import dotenv from "dotenv";
 
-config();
+dotenv.config();
 
 const server = new Server();
 server.listen();
