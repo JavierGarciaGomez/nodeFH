@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 
 // export enum UserRole {
 //   ADMIN_ROLE = "admin",
@@ -20,6 +20,26 @@ export interface IUser extends Document {
 
 export interface IRole extends Document {
   role: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ICategory extends Document {
+  name: string;
+  active: Boolean;
+  createdBy: ObjectId;
+  updatedBy: ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IProduct extends Document {
+  name: string;
+  price: number;
+  active: Boolean;
+  category: ObjectId;
+  createdBy: ObjectId;
+  updatedBy: ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }

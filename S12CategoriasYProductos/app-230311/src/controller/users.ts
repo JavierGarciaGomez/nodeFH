@@ -72,7 +72,6 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: RequestWithUid, res: Response) => {
   const { id } = req.params;
   const authenticatedUser = req.user;
-  console.log({ authenticatedUser });
 
   // Find the user by id
   const user = await UserModel.findById(id);

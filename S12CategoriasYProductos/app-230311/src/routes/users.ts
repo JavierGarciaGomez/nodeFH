@@ -9,22 +9,22 @@ import { Router } from "express";
 import { check } from "express-validator";
 import {
   checkEmailUniqueness,
-  checkifUserExists,
+  checkIfUserExists,
   checkUserRole,
 } from "../helpers/dbValidations";
 import { validateJwt } from "../middlewares/validateJwt";
 import { itHasRole, isAdminRole, validateFields } from "../middlewares/";
 
-export const usersRouter = Router();
+const router = Router();
 
 export enum UserRole {
   ADMIN_ROLE = "admin",
   USER_ROLE = "user",
 }
 
-usersRouter.get("/", getUsers);
-usersRouter.get("/:id", getUserById);
-usersRouter.post(
+router.get("/", getUsers);
+router.get("/:id", getUserById);
+router.post(
   "/",
   [
     check("name", "Name is a required value").not().isEmpty(),
@@ -37,26 +37,28 @@ usersRouter.post(
   ],
   createUser
 );
-usersRouter.put(
+router.put(
   "/:id",
   [
     check("id", "Is not a valid id").isMongoId(),
-    checkifUserExists,
+    checkIfUserExists,
     checkUserRole,
     validateFields,
   ],
 
   updateUser
 );
-usersRouter.delete(
+router.delete(
   "/:id",
   [
     validateJwt,
     isAdminRole,
     itHasRole("ADMIN_ROLE", "SALES_ROLE"),
     check("id", "Is not a valid id").isMongoId(),
-    checkifUserExists,
+    checkIfUserExists,
     validateFields,
   ],
   deleteUser
 );
+
+export default router;

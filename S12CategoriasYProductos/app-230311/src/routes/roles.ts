@@ -4,15 +4,15 @@ import { check } from "express-validator";
 import { createRole, listRoles } from "../controller/roles";
 import { checkRoleUniqueness } from "../helpers/dbValidations";
 
-export const rolesRouter = Router();
+export const router = Router();
 
 export enum UserRole {
   ADMIN_ROLE = "admin",
   USER_ROLE = "user",
 }
-rolesRouter.get("/", listRoles);
+router.get("/", listRoles);
 
-rolesRouter.post(
+router.post(
   "/",
   [
     check("role", "Role is a required value").not().isEmpty(),
@@ -22,3 +22,5 @@ rolesRouter.post(
 
   createRole
 );
+
+export default router;

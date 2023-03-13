@@ -1,10 +1,8 @@
-import { authRouter } from "./../routes/auth";
+import { routers } from ".././routes";
 import { connectDataBase } from "../db/config";
 import express, { Express } from "express";
 import cors from "cors";
 import path from "path";
-import { usersRouter } from "../routes/users";
-import { rolesRouter } from "../routes/roles";
 
 class Server {
   private app: Express;
@@ -13,6 +11,7 @@ class Server {
     usersPath: "/api/users",
     authPath: "/api/auth",
     rolesPath: "/api/roles",
+    categoriesPath: "/api/categories",
   };
 
   constructor() {
@@ -28,9 +27,10 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.apiPaths.usersPath, usersRouter);
-    this.app.use(this.apiPaths.rolesPath, rolesRouter);
-    this.app.use(this.apiPaths.authPath, authRouter);
+    this.app.use(this.apiPaths.usersPath, routers.users);
+    this.app.use(this.apiPaths.rolesPath, routers.roles);
+    this.app.use(this.apiPaths.authPath, routers.auth);
+    this.app.use(this.apiPaths.categoriesPath, routers.categories);
   }
 
   middlewares() {
