@@ -12,6 +12,8 @@ class Server {
     authPath: "/api/auth",
     rolesPath: "/api/roles",
     categoriesPath: "/api/categories",
+    productsPath: "/api/products",
+    searchPath: "/api/search",
   };
 
   constructor() {
@@ -31,6 +33,8 @@ class Server {
     this.app.use(this.apiPaths.rolesPath, routers.roles);
     this.app.use(this.apiPaths.authPath, routers.auth);
     this.app.use(this.apiPaths.categoriesPath, routers.categories);
+    this.app.use(this.apiPaths.productsPath, routers.products);
+    this.app.use(this.apiPaths.searchPath, routers.search);
   }
 
   middlewares() {

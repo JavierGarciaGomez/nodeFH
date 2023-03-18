@@ -9,7 +9,7 @@ import { Router } from "express";
 import { check } from "express-validator";
 import {
   checkEmailUniqueness,
-  checkIfUserExists,
+  checkIfUserExistsById,
   checkUserRole,
 } from "../helpers/dbValidations";
 import { validateJwt } from "../middlewares/validateJwt";
@@ -41,7 +41,7 @@ router.put(
   "/:id",
   [
     check("id", "Is not a valid id").isMongoId(),
-    checkIfUserExists,
+    checkIfUserExistsById,
     checkUserRole,
     validateFields,
   ],
@@ -55,7 +55,7 @@ router.delete(
     isAdminRole,
     itHasRole("ADMIN_ROLE", "SALES_ROLE"),
     check("id", "Is not a valid id").isMongoId(),
-    checkIfUserExists,
+    checkIfUserExistsById,
     validateFields,
   ],
   deleteUser

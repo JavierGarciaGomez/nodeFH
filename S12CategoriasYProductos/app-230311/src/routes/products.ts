@@ -1,52 +1,54 @@
+import {
+  checkProductNameUniqueness,
+  checkIfCategoryExistsByCategoryId,
+  checkIfProductExistsById,
+} from "./../helpers/dbValidations";
+import {
+  createProduct,
+  deleteProduct,
+  getProductById,
+  getProducts,
+  updateProduct,
+} from "./../controller/products";
 import { Router } from "express";
 import { check } from "express-validator";
-import {
-  checkCategoryNameUniqueness,
-  checkIfCategoryExistsById,
-} from "../helpers/dbValidations";
 import { validateJwt } from "../middlewares/validateJwt";
-import { itHasRole, validateFields } from "../middlewares/";
-import {
-  createCategory,
-  deleteCategory,
-  getCategories,
-  getCategoryById,
-  updateCategory,
-} from "../controller/categories";
+import { itHasRole, validateFields } from "../middlewares";
 
 const router = Router();
 
-router.get("/", getCategories);
+router.get("/", getProducts);
 router.get(
   "/:id",
   [
     check("id", "Is not a valid id").isMongoId(),
-    checkIfCategoryExistsById,
+    checkIfProductExistsById,
     validateFields,
   ],
-  getCategoryById
+  getProductById
 );
 router.post(
   "/",
   [
     validateJwt,
     check("name", "Name is a required value").not().isEmpty(),
-    checkCategoryNameUniqueness,
+    check("categoryId", "Is not a valid id").isMongoId(),
+    checkIfCategoryExistsByCategoryId,
+    checkProductNameUniqueness,
     validateFields,
   ],
-  createCategory
+  createProduct
 );
 router.put(
   "/:id",
   [
     validateJwt,
     check("id", "Is not a valid id").isMongoId(),
-    check("name", "Name is a required value").not().isEmpty(),
-    checkIfCategoryExistsById,
-    checkCategoryNameUniqueness,
+    checkIfProductExistsById,
+    checkProductNameUniqueness,
     validateFields,
   ],
-  updateCategory
+  updateProduct
 );
 router.delete(
   "/:id",
@@ -54,10 +56,10 @@ router.delete(
     validateJwt,
     check("id", "Is not a valid id").isMongoId(),
     itHasRole("ADMIN_ROLE", "SALES_ROLE"),
-    checkIfCategoryExistsById,
+    checkIfProductExistsById,
     validateFields,
   ],
-  deleteCategory
+  deleteProduct
 );
 
 export default router;
