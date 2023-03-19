@@ -48,6 +48,7 @@ class Server {
       fileUpload({
         useTempFiles: true,
         tempFileDir: "/tmp/",
+        createParentPath: true,
       })
     );
     // body read and parse

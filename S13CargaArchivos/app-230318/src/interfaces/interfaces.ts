@@ -36,6 +36,7 @@ export interface ICategory extends Document {
 export interface IProduct extends Document {
   name: string;
   price: number;
+  imgUrl: string;
   active: Boolean;
   category: ObjectId;
   createdBy: ObjectId;
@@ -69,4 +70,31 @@ export interface GooglePayload {
   iat: number;
   exp: number;
   jti: string;
+}
+
+export enum ErrorCode {
+  "er01",
+  "er02",
+  "er03",
+  "er04",
+  "er05",
+  "er06",
+  "er07",
+  "er08",
+  "er09",
+  "er10",
+}
+
+export interface ErrorDetail {
+  errorCode: ErrorCode;
+  typeName?: string;
+  message: string;
+  detail?: string;
+  help?: string;
+}
+
+export interface ApiError {
+  timestamp: Date;
+  statusCode: number;
+  errors: ErrorDetail[];
 }

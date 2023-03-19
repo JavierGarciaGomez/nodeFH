@@ -1,3 +1,4 @@
+import { successResponse } from "./../responses/index";
 import { Request, Response } from "express";
 import UserModel from "../models/User";
 import { createHashedPassword } from "../helpers/helpers";
@@ -13,7 +14,7 @@ export const getUsers = async (req: Request, res: Response) => {
       .skip(Number(skip)),
   ]);
 
-  return res.status(403).json({
+  return res.status(200).json({
     msg: "get API user",
     count,
     users,
@@ -37,10 +38,7 @@ export const createUser = async (req: Request, res: Response) => {
     user.password = await createHashedPassword(password);
     const createdUser = await user.save();
 
-    res.status(201).json({
-      msg: "get API user",
-      createdUser,
-    });
+    return successResponse(res, 201, "resource created", createdUser);
   } catch (error) {
     res.status(500).json({ error, msg: "Error creating user" });
   }

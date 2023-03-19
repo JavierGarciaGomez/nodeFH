@@ -3,4 +3,7 @@ node_modules/
 tokens.txt
 .env
 uploads/productos/**.*
-uploads/usuarios/**.*
+uploads/users/**.*
+uploads/users/**/*
+uploads/myUploads/**/*
+uploads/users/**

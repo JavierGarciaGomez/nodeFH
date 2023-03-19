@@ -4,16 +4,10 @@ import {
   searchUsers,
 } from "./../helpers/dbHelpers";
 import { Request, Response } from "express";
+import { VALID_COLLECTIONS } from "../constants/constants";
 
-const allowedCollections = ["users", "categories", "products", "roles"];
 export const search = async (req: Request, res: Response) => {
   const { collection, term } = req.params;
-
-  if (!allowedCollections.includes(collection)) {
-    return res.status(400).json({
-      msg: `The allowed collections are ${allowedCollections}`,
-    });
-  }
 
   switch (collection) {
     case "users":

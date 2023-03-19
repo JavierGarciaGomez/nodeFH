@@ -1,3 +1,4 @@
+import { errorResponse } from "./../responses/index";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 
@@ -6,14 +7,18 @@ export const validateFields = (
   res: Response,
   next: NextFunction
 ) => {
-  const errors = validationResult(req);
+  const errors = validationResult(req).array();
+  console.log({ errors });
 
-  console.log(errors);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      ok: false,
-      errors,
-    });
+  if (errors.length) {
+    return errorResponse(
+      res,
+      400,
+      "myErrorCode",
+      "Something went wrong",
+      "express-validator error",
+      errors
+    );
   }
   next();
 };

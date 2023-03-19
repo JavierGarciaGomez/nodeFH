@@ -10,6 +10,7 @@ import { check } from "express-validator";
 import {
   checkEmailUniqueness,
   checkIfUserExistsById,
+  checkIsMongoId,
   checkUserRole,
 } from "../helpers/dbValidations";
 import { validateJwt } from "../middlewares/validateJwt";
@@ -39,12 +40,7 @@ router.post(
 );
 router.put(
   "/:id",
-  [
-    check("id", "Is not a valid id").isMongoId(),
-    checkIfUserExistsById,
-    checkUserRole,
-    validateFields,
-  ],
+  [checkIsMongoId, checkIfUserExistsById, checkUserRole, validateFields],
 
   updateUser
 );
@@ -54,7 +50,7 @@ router.delete(
     validateJwt,
     isAdminRole,
     itHasRole("ADMIN_ROLE", "SALES_ROLE"),
-    check("id", "Is not a valid id").isMongoId(),
+    checkIsMongoId,
     checkIfUserExistsById,
     validateFields,
   ],

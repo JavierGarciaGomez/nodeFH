@@ -1,5 +1,6 @@
 import { check } from "express-validator";
 import { Model } from "mongoose";
+import { VALID_COLLECTIONS, VALID_EXTENSIONS } from "../constants/constants";
 import { CategoryModel, ProductModel, RoleModel, UserModel } from "../models";
 
 export const checkUserRole = check("role")
@@ -69,3 +70,13 @@ export const checkIfResourceExistById = async (
   if (!resourceExists)
     throw new Error(`There is no resource with the id '${id}'`);
 };
+
+export const checkIsMongoId = check("id", "Is not a valid id").isMongoId();
+
+export const checkValidCollection = check("collection").custom((collection) => {
+  if (!VALID_COLLECTIONS.includes(collection))
+    throw new Error(
+      `This collection doesn't exist. These are the available collections '${VALID_COLLECTIONS}'`
+    );
+  return true;
+});

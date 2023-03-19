@@ -4,6 +4,7 @@ import { IProduct } from "../interfaces/interfaces";
 const productSchema = new Schema<IProduct>({
   name: { type: String, required: [true, "The name is needed"], unique: true },
   price: { type: Number, default: 0 },
+  imgUrl: { type: String },
   active: {
     type: Boolean,
     default: true,
