@@ -1,13 +1,14 @@
+import { UploadedFile } from "express-fileupload";
 import fs from "fs";
 import path from "path";
-import { errorResponse, sendApiError } from "./../responses/index";
+import { errorResponse } from "./../responses/index";
 import { Request, Response } from "express";
 import { UPLOADS_FOLDER } from "../constants/constants";
-
-import { successResponse } from "../responses";
-import { ProductModel, UserModel } from "../models";
+import { v2 as cloudinary } from "cloudinary";
 import { saveUploadedFile } from "../helpers";
 import { getModel } from "../helpers/dbHelpers";
+
+cloudinary.config(process.env.CLOUDINARY_URL!);
 
 export const uploadSingleFile = async (req: Request, res: Response) => {
   try {
@@ -20,7 +21,7 @@ export const uploadSingleFile = async (req: Request, res: Response) => {
   }
 };
 
-export const uploadImg = async (req: Request, res: Response) => {
+export const updateImg = async (req: Request, res: Response) => {
   try {
     const { id, collection } = req.params;
     const model = await getModel(id, collection);
@@ -33,7 +34,7 @@ export const uploadImg = async (req: Request, res: Response) => {
         collection,
         model.imgUrl
       );
-      console.log(imagePath);
+
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
@@ -69,6 +70,39 @@ export const showImg = async (req: Request, res: Response) => {
 
     res.sendFile(path.join(__dirname, "../assets/no-image.jpg"));
   } catch (error) {
+    errorResponse(res, 500, "Talk to the administrator", undefined, undefined, [
+      (error as Error).message, // Cast the error object to an Error and get its message property
+    ]);
+  }
+};
+
+export const updateImgCloudinary = async (req: Request, res: Response) => {
+  try {
+    const { id, collection } = req.params;
+    const model = await getModel(id, collection);
+
+    // Clean prev img
+    if (model?.imgUrl) {
+      const nameArray = model.imgUrl.split("/");
+      const name = nameArray[nameArray.length - 1];
+      const [public_id] = name.split(".");
+
+      await cloudinary.uploader.destroy(`${collection}/${public_id}`);
+    }
+
+    const { tempFilePath } = req.files!.file as UploadedFile;
+
+    const { secure_url } = await cloudinary.uploader.upload(tempFilePath, {
+      folder: collection,
+    });
+
+    model!.imgUrl = secure_url;
+
+    await model!.save();
+
+    res.json(model);
+  } catch (error) {
+    console.log({ error });
     errorResponse(res, 500, "Talk to the administrator", undefined, undefined, [
       (error as Error).message, // Cast the error object to an Error and get its message property
     ]);

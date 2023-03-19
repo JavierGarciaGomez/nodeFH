@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { showImg, uploadImg, uploadSingleFile } from "../controller/uploads";
+import {
+  showImg,
+  updateImg,
+  updateImgCloudinary,
+  uploadSingleFile,
+} from "../controller/uploads";
 import { checkIsMongoId, checkValidCollection } from "../helpers/dbValidations";
 import { validateFields } from "../middlewares";
 import { validateFile } from "../middlewares/validateFile";
@@ -10,7 +15,8 @@ router.post("/", [validateFile, validateFields], uploadSingleFile);
 router.put(
   "/:collection/:id",
   [validateFile, checkIsMongoId, checkValidCollection, validateFields],
-  uploadImg
+  updateImgCloudinary
+  //  updateImg
 );
 router.get(
   "/:collection/:id",
