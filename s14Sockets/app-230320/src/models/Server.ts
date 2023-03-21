@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import http from "http";
 import { Server as SocketServer, Socket } from "socket.io";
+import { handleSocketEvents } from "../sockets/controller";
 
 class Server {
   private app: Express;
@@ -19,6 +20,8 @@ class Server {
     this.middlewares();
     this.routes();
     this.io = new SocketServer(this.server);
+    // Sockets
+    this.sockets();
   }
 
   routes() {}
@@ -28,6 +31,10 @@ class Server {
     const publicPath = path.join(__dirname, "../public");
     this.app.use(express.static(publicPath));
     // body read and parse
+  }
+
+  sockets() {
+    this.io.on("connection", handleSocketEvents);
   }
 
   listen() {
