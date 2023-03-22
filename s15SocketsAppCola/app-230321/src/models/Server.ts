@@ -4,16 +4,19 @@ import path from "path";
 import http from "http";
 import { Server as SocketServer, Socket } from "socket.io";
 import { handleSocketEvents } from "../sockets/controller";
+import { TicketControl } from "./TicketControl";
 
 class Server {
   private app: Express;
   private PORT: string;
-  private apiPaths = {};
   private server: http.Server;
   private io: SocketServer;
+  private ticketControl: TicketControl;
 
   constructor() {
     this.app = express();
+    this.ticketControl = new TicketControl();
+
     this.PORT = process.env.PORT || "3033";
     this.server = http.createServer(this.app);
 

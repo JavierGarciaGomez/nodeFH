@@ -15,29 +15,27 @@
   </head>
 
   <body class="container">
-    <h1 class="mt-5">Ticket Control</h1>
-
+    <h1 class="mt-5">Desk</h1>
+    <hr />
     <div class="row">
-      <div class="col-6">
-        <a class="btn btn-primary" href="public.html">Public Screen</a>
-        <a class="btn btn-secondary" href="new-ticket.html">Create Tickets</a>
+      <div class="col-8">
+        <h4>Attending <small class="text-primary">....</small></h4>
+
+        <button class="btn btn-primary mt-5">Attend next ticket</button>
       </div>
 
-      <div class="col-6">
-        <form action="desk.html">
-          <input
-            name="desk"
-            type="text"
-            class="form-control"
-            placeholder="Desk"
-            autofocus
-            required
-          />
+      <div class="col-4 text-center">
+        <h4>Waiting</h4>
 
-          <br />
-          <button type="submit" class="btn btn-primary">Ingresar</button>
-        </form>
+        <div class="alert alert-info mt-2">
+          <span>No more tickets</span>
+        </div>
+
+        <h1 id="lblPendientes">10</h1>
       </div>
     </div>
+
+    <script src="./socket.io/socket.io.js"></script>
+    <script src="./js/desk.js"></script>
   </body>
 </html>
